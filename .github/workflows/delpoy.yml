@@ -12,9 +12,26 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
+
+      - name: Set up Shopify environment variables
+        env:
+          SHOPIFY_SHOP_NAME: ${{ secrets.SHOPIFY_SHOP_NAME }}
+          SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
+          SHOPIFY_API_SECRET: ${{ secrets.SHOPIFY_API_SECRET }}
+          SHOPIFY_ADMIN_API_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_TOKEN }}
+        run: |
+          echo "SHOPIFY_SHOP_NAME=$SHOPIFY_SHOP_NAME" >> $GITHUB_ENV
+          echo "SHOPIFY_API_KEY=$SHOPIFY_API_KEY" >> $GITHUB_ENV
+          echo "SHOPIFY_API_SECRET=$SHOPIFY_API_SECRET" >> $GITHUB_ENV
+          echo "SHOPIFY_ADMIN_API_TOKEN=$SHOPIFY_ADMIN_API_TOKEN" >> $GITHUB_ENV
 
       - name: Build project
         run: npm run pages:build
