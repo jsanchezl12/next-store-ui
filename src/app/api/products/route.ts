@@ -3,12 +3,21 @@
 import type { NextRequest, NextResponse } from 'next/server'
 import Shopify from 'shopify-api-node';
 //import { getRequestContext } from '@cloudflare/next-on-pages'
+// let Shopify;
+// if (typeof window === 'undefined') {
+//   Shopify = require('shopify-api-node');
+// }
+//export const runtime = 'edge';
 
 const shopify = new Shopify({
   shopName: process.env.SHOPIFY_SHOP_NAME as string,
   apiKey: process.env.SHOPIFY_API_KEY as string,
   password: process.env.SHOPIFY_ADMIN_API_TOKEN as string,
 });
+if (!process.env.SHOPIFY_SHOP_NAME || !process.env.SHOPIFY_API_KEY || !process.env.SHOPIFY_ADMIN_API_TOKEN) {
+  console.error('Missing Shopify environment variables');
+  throw new Error('Missing or invalid Shopify configuration');
+}
 console.log('shopify:', process.env.SHOPIFY_SHOP_NAME, process.env.SHOPIFY_API_KEY, process.env.SHOPIFY_API_PASSWORD);
 
 export async function GET(request: NextRequest) {

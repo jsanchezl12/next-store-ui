@@ -1,60 +1,42 @@
 // pages/index.tsx
 "use client";
-import { useEffect, useState } from 'react';
-import { getAllProducts } from '../shopifyService';
-import { IProduct } from '../models/types';
-import styles from '../page.module.css';
-import Image from 'next/image';
 
-export default function Home() {
-  const [products, setProducts] = useState<IProduct[]>([]);
+import { useEffect, useState } from 'react';
+import { Product } from '../models/types';
+
+const ProductsPage = () => {
+  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    async function fetchProducts() {
+    const fetchProducts = async () => {
       try {
-        const products = await getAllProducts();
-        setProducts(products);
+        const response = await fetch('/api/products');
+        const data: Product[] = await response.json();
+        setProducts(data);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error('Failed to fetch products:', error);
       }
-    }
+    };
 
     fetchProducts();
   }, []);
 
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;<code className={styles.code}>src/app/page.tsx</code>&nbsp;this is a test from @juansesanchezl
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <h2>Products</h2>
-        <ul>
-          {products.map(product => (
-            <li key={product.id}>{product.title}</li>
-          ))}
-        </ul>
-      </div>
-    </main>
+    <div>
+      <h1>Shopify Products</h1>
+      {products.length > 0 ? (
+        products.map((product) => (
+          <div key={product.id}>
+            <h2>{product.title}</h2>
+            <p>{product.body_html}</p>
+            <img src={product.image?.src} alt={product.image?.alt ?? ''} width={200} />
+          </div>
+        ))
+      ) : (
+        <p>No products found</p>
+      )}
+    </div>
   );
-}
+};
+
+export default ProductsPage;

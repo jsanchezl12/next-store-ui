@@ -22,16 +22,14 @@ jobs:
         run: npm install
 
       - name: Set up Shopify environment variables
-        env:
-          SHOPIFY_SHOP_NAME: ${{ secrets.SHOPIFY_SHOP_NAME }}
-          SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY }}
-          SHOPIFY_API_SECRET: ${{ secrets.SHOPIFY_API_SECRET }}
-          SHOPIFY_ADMIN_API_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_TOKEN }}
         run: |
-          echo "SHOPIFY_SHOP_NAME=$SHOPIFY_SHOP_NAME" >> $GITHUB_ENV
-          echo "SHOPIFY_API_KEY=$SHOPIFY_API_KEY" >> $GITHUB_ENV
-          echo "SHOPIFY_API_SECRET=$SHOPIFY_API_SECRET" >> $GITHUB_ENV
-          echo "SHOPIFY_ADMIN_API_TOKEN=$SHOPIFY_ADMIN_API_TOKEN" >> $GITHUB_ENV
+          echo "SHOPIFY_SHOP_NAME=${{ secrets.SHOPIFY_SHOP_NAME }}" >> .env.local
+          echo "SHOPIFY_API_KEY=${{ secrets.SHOPIFY_API_KEY }}" >> .env.local
+          echo "SHOPIFY_API_SECRET=${{ secrets.SHOPIFY_API_SECRET }}" >> .env.local
+          echo "SHOPIFY_ADMIN_API_TOKEN=${{ secrets.SHOPIFY_ADMIN_API_TOKEN }}" >> .env.local
+
+      - name: Print .env.local contents
+        run: cat .env.local
 
       - name: Build project
         run: npm run pages:build
